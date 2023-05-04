@@ -23,5 +23,4 @@ public interface UserService {
     User getCurrentUser();
 
     User subscribeCity(Long cityId);
-
 }

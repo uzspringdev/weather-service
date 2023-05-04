@@ -4,7 +4,6 @@ import com.pro.weatherservice.domain.City;
 import com.pro.weatherservice.service.CityService;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
@@ -21,7 +20,7 @@ public class RabbitMQProducer {
         this.cityService = cityService;
     }
 
-    @Scheduled(fixedRate = 60 * 60 * 1000)
+    //@Scheduled(fixedRate = 60 * 60 * 1000)
     public void sendCityNames() {
         List<City> cityList = cityService.findAll();
         List<String> cityNames = cityList.stream().map(City::getName).collect(Collectors.toList());

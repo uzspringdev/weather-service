@@ -26,8 +26,10 @@ public interface WeatherService {
 
     void delete(Long id);
 
-    void updateCurrentWeather() throws InterruptedException;
+    List<WeatherData> getSubscriptionWeatherData();
 
     WeatherDataDto getCurrentWeather(String city) throws IOException;
+
+    void updateWeatherData();
 
 }

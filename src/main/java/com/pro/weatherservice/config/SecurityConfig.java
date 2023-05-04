@@ -23,13 +23,16 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
-                .csrf().disable()
-                .headers().frameOptions().disable()
+                .csrf()
+                .ignoringRequestMatchers("/api/v1/register")
+                .ignoringRequestMatchers("/api/v1/auth")
                 .and()
                 .authorizeHttpRequests()
                 .requestMatchers("/api/v1/auth").permitAll()
                 .requestMatchers("/api/v1/register").permitAll()
                 .requestMatchers("/api/v1/users/**").hasRole("USER")
+                .requestMatchers("/api/v1/weather/getSubscription").hasRole("USER")
+                .requestMatchers("/api/v1/weather/updateAll").hasRole("ADMIN")
                 .requestMatchers("/api/v1/users/**").hasRole("ADMIN")
                 .anyRequest().authenticated()
                 .and()

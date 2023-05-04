@@ -31,6 +31,12 @@ public class WeatherController {
         return ResponseEntity.ok(weatherDataList);
     }
 
+    @GetMapping(value = "/getSubscription")
+    public ResponseEntity<?> getSubscription() {
+        List<WeatherData> weatherDataList = weatherService.getSubscriptionWeatherData();
+        return ResponseEntity.ok(weatherDataList);
+    }
+
     @GetMapping(value = "/findById/{id}")
     public ResponseEntity<?> getById(@PathVariable(name = "id") Long id) {
         WeatherData weatherData = weatherService.findById(id);
@@ -41,6 +47,12 @@ public class WeatherController {
     public ResponseEntity<?> getByCity(@PathVariable(name = "city") String city) {
         WeatherData weatherData = weatherService.findByCity(city);
         return ResponseEntity.ok(weatherData);
+    }
+
+    @GetMapping(value = "/updateAll")
+    public ResponseEntity<?> updateAll(){
+        weatherService.updateWeatherData();
+        return ResponseEntity.ok("WeatherData updated");
     }
 
     @PutMapping(value = "/update/{id}")
@@ -54,5 +66,7 @@ public class WeatherController {
         weatherService.delete(id);
         return ResponseEntity.ok("WeatherData deleted");
     }
+
+
 
 }

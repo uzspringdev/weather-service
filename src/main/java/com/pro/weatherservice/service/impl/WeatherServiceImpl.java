@@ -2,19 +2,19 @@ package com.pro.weatherservice.service.impl;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.pro.weatherservice.domain.City;
+import com.pro.weatherservice.domain.User;
 import com.pro.weatherservice.domain.WeatherData;
 import com.pro.weatherservice.dto.WeatherDataDto;
 import com.pro.weatherservice.mapper.WeatherDataMapper;
 import com.pro.weatherservice.message.RabbitMQProducer;
 import com.pro.weatherservice.repository.WeatherDataRepository;
-import com.pro.weatherservice.service.CityService;
+import com.pro.weatherservice.service.UserService;
 import com.pro.weatherservice.service.WeatherService;
 import org.apache.http.HttpResponse;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.impl.client.HttpClientBuilder;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
 import java.io.BufferedReader;
@@ -40,12 +40,12 @@ public class WeatherServiceImpl implements WeatherService {
     private final HttpClient httpClient = HttpClientBuilder.create().build();
     private final WeatherDataMapper weatherDataMapper = WeatherDataMapper.getInstance;
     private final WeatherDataRepository weatherDataRepository;
-    private final CityService cityService;
+    private final UserService userService;
     private final RabbitMQProducer rabbitMQProducer;
 
-    public WeatherServiceImpl(WeatherDataRepository weatherDataRepository, CityService cityService, RabbitMQProducer rabbitMQProducer) {
+    public WeatherServiceImpl(WeatherDataRepository weatherDataRepository, UserService userService, RabbitMQProducer rabbitMQProducer) {
         this.weatherDataRepository = weatherDataRepository;
-        this.cityService = cityService;
+        this.userService = userService;
         this.rabbitMQProducer = rabbitMQProducer;
     }
 
@@ -100,20 +100,13 @@ public class WeatherServiceImpl implements WeatherService {
     }
 
     @Override
-    //@Scheduled(fixedRate = 30 * 60 * 1000)
-    public void updateCurrentWeather() {
-        List<City> cityList = cityService.findAll();
-        List<WeatherDataDto> weatherDataDtoList = cityList.stream().map(City::getName).map(name -> {
-            try {
-                return getCurrentWeather(name);
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-            return null;
-        }).collect(Collectors.toList());
+    public List<WeatherData> getSubscriptionWeatherData() {
+        User currentUser = userService.getCurrentUser();
+        List<String> list = currentUser.getCities().stream().map(City::getName).collect(Collectors.toList());
 
-
+        return weatherDataRepository.findAllByNameIn(list);
     }
+
 
     public WeatherDataDto getCurrentWeather(String city) throws IOException {
         String encodedCityName = URLEncoder.encode(city, StandardCharsets.UTF_8);
@@ -136,6 +129,11 @@ public class WeatherServiceImpl implements WeatherService {
         ObjectMapper objectMapper = new ObjectMapper();
         return objectMapper.readValue(sb.toString(), WeatherDataDto.class);
 
+    }
+
+    @Override
+    public void updateWeatherData() {
+        rabbitMQProducer.sendCityNames();
     }
 
 

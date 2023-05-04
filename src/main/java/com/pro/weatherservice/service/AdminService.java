@@ -17,4 +17,6 @@ public interface AdminService {
     Admin update(Long id, AdminDto adminDto);
 
     void delete(Long id);
+
+    Admin getCurrentAdmin();
 }
