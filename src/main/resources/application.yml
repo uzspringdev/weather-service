@@ -1,0 +1,22 @@
+server:
+  port: 9091
+spring:
+  datasource:
+    url: jdbc:postgresql://localhost:5432/weather-service
+    username: postgres
+    password: root
+  jpa:
+    show-sql: true
+    hibernate:
+      ddl-auto: update
+
+weather:
+  api:
+    key: d5a864be76b9ed0b247266d63c55fb8e
+    url: https://api.openweathermap.org/data/2.5/weather?q=%s&appid=%s
+json:
+  web:
+    token:
+      secret: thisissecretkeyforinterview
+      validation-time: 86400000
+      refresh-time: 43200000
