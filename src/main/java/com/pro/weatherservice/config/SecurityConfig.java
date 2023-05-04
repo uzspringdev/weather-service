@@ -30,10 +30,11 @@ public class SecurityConfig {
                 .authorizeHttpRequests()
                 .requestMatchers("/api/v1/auth").permitAll()
                 .requestMatchers("/api/v1/register").permitAll()
-                .requestMatchers("/api/v1/users/**").hasRole("USER")
+                .requestMatchers("/api/v1/users/updateCurrentUser").hasRole("USER")
                 .requestMatchers("/api/v1/weather/getSubscription").hasRole("USER")
                 .requestMatchers("/api/v1/weather/updateAll").hasRole("ADMIN")
                 .requestMatchers("/api/v1/users/**").hasRole("ADMIN")
+                .requestMatchers("/api/v1/cities/**").hasRole("ADMIN")
                 .anyRequest().authenticated()
                 .and()
                 .apply(jwtConfigurer(jwtService));
