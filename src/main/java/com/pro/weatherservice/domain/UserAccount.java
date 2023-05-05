@@ -3,6 +3,7 @@ package com.pro.weatherservice.domain;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.pro.weatherservice.model.UserType;
 import jakarta.persistence.*;
+import jakarta.validation.constraints.Size;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
@@ -18,9 +19,11 @@ public class UserAccount {
     private Long id;
 
     @Column(name = "username", unique = true, nullable = false)
+    @Size(min = 3, max = 60)
     private String username;
 
     @Column(name = "password", nullable = false, length = 60)
+    @Size(min = 8, max = 60)
     private String password;
 
     @ManyToMany(cascade = CascadeType.DETACH, fetch = FetchType.EAGER)

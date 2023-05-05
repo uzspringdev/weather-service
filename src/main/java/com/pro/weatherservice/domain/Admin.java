@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonFormat;
 import com.pro.weatherservice.model.LangKey;
 import com.pro.weatherservice.model.Status;
 import jakarta.persistence.*;
+import jakarta.validation.constraints.Size;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
@@ -22,15 +23,19 @@ public class Admin {
     private UserAccount userAccount;
 
     @Column(name = "first_name")
+    @Size(min = 2, max = 60)
     private String firstName;
 
     @Column(name = "last_name")
+    @Size(min = 2, max = 60)
     private String lastName;
 
     @Column(name = "phone_number", unique = true, nullable = false)
+    @Size(min = 7, max = 60)
     private String phoneNumber;
 
     @Column(name = "email", unique = true, nullable = false)
+    @Size(min = 5, max = 60)
     private String email;
 
     @Column(name = "status")
